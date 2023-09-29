@@ -684,3 +684,94 @@ class practice_9
         }
     }
 }
+
+class practice_10
+{
+
+    public void task_1(int n)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            log(i);
+        }
+        void log(object _)
+        {
+            Console.WriteLine(_);
+        }
+    }
+
+    public void task_2(string str)
+    {
+        Console.WriteLine($"Строка [{str}] " + (is_palidrome(str) ? "явлется палидромом" : "не явлется палидромом"));
+
+
+
+        bool is_palidrome(string _)
+        {
+            return _ == reverse(_);
+        }
+
+        string reverse(String str)
+        {
+            string qw = "";
+            for (int i = str.Length - 1; i >= 0; i--)
+            {
+                qw += str[i];
+            }
+            return qw;
+        }
+
+    }
+
+
+    public void task_3(int[] _)
+    {
+        Console.WriteLine($"Сумма положительных элементов массива: {sum_true(_)}");
+
+        int sum_true(int[] __)
+        {
+            int v = 0;
+            for (int i = 0; i < __.Length; i++)
+            {
+                if (__[i] > 0) v += __[i];
+            }
+
+            return v;
+        }
+    }
+
+
+    public void task_4(int n)
+    {
+        Console.WriteLine($"Наименьший делитель числа {n}: {find_spliter(n)}");
+
+        int find_spliter(int _)
+        {
+            for (int i = 2; i < _; i++)
+            {
+                if (_ % i == 0)
+                {
+                    return i;
+                }
+            }
+            return 1;
+        }
+    }
+
+    public void task_5(int n)
+    {
+        Console.WriteLine($"Факториал числа {n}: {find_factorial(n)}");
+
+        long find_factorial(int _)
+        {
+            if (_ <= 1) return 1;
+            long __ = 1;
+            for (int i = 2; i <= _; i++)
+            {
+                __ *= i;
+            }
+
+            return __;
+        }
+    }
+}
