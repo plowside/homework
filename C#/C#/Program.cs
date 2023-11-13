@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Security.Cryptography;
 
 practice_9 test = new practice_9();
 test.task_5();
-
-
-
 
 class practice_1
 {
@@ -289,7 +287,7 @@ class practice_5
     }
 }
 
-class practice_6
+class practice_additional
 {
     public int[,] array_fill() {
         Random rand = new Random();
@@ -390,7 +388,7 @@ class practice_6
     }
 }
 
-class practice_7
+class practice_6
 {
     public int[,] array_fill(int from = 1, int to = 16)
     {
@@ -501,7 +499,7 @@ class practice_7
     }
 }
 
-class practice_8
+class practice_7
 {
     public int find_spliter(int _, int __)
     {
@@ -577,7 +575,7 @@ class practice_8
     }
 }
 
-class practice_9
+class practice_8
 {
     public long find_factorial(int _)
     {
@@ -682,5 +680,285 @@ class practice_9
             else _ = get_fib_recursive(i);
             Console.WriteLine($"{i}: {_}");
         }
+    }
+}
+
+class practice_9
+{
+    enum weeks_days
+    {
+        Понедельник = 1,
+        Вторник,
+        Среда,
+        Четверг,
+        Пятница,
+        Суббота,
+        Воскресенье
+    };
+
+    enum colors
+    {
+        Красный = 1,
+        Зеленый,
+        Синий
+    };
+
+    public void task_1()
+    {
+        var limiter = Enum.GetNames(typeof(weeks_days)).Length;
+        Console.Write($"Введите номер дня недели (от 1 до {limiter}): ");
+        int day_index = int.Parse(Console.ReadLine());
+        if (day_index < 1) Console.WriteLine($"Вы вышли за пределы [1-{limiter}]");
+        else if (day_index > limiter)
+        {
+            while (day_index > limiter)
+            {
+                day_index -= limiter;
+            }
+        }
+        weeks_days day = (weeks_days)day_index;
+        Console.WriteLine($"Введённый день недели: {day}");
+    }
+
+
+    public void task_2()
+    {
+        var limiter = Enum.GetNames(typeof(colors)).Length;
+        var colors_names = string.Join(", ", Enum.GetNames(typeof(colors)).Zip(Enum.GetValues(typeof(colors)).Cast<int>(), (_, __) => $"{_} - {__}"));
+        Console.Write($"Выберите свой любимый цвет [{colors_names}]: ");
+        int color_index = int.Parse(Console.ReadLine());
+        if (color_index < 1) Console.WriteLine($"Вы вышли за пределы [1-{limiter}]");
+        else if (color_index > limiter)
+        {
+            while (color_index > limiter)
+            {
+                color_index -= limiter;
+            }
+        }
+        colors color = (colors)color_index;
+        Console.WriteLine($"Ваш любимый цвет: {color}");
+    }
+    
+
+
+    public enum books
+    {
+        Фэнтези = 1,
+        Роман,
+        Детектив,
+        Хоррор,
+        Мистика
+    }
+
+    public class book_element
+    {
+        public string title { get; set; }
+        public books books_var { get; set; }
+
+        public book_element(string title_, books books_var_)
+        {
+            title = title_;
+            books_var = books_var_;
+        }
+
+        public override string ToString()
+        {
+            return title;
+        }
+    }
+
+    public class books_library
+    {
+        private List<book_element> books_list;
+
+        public books_library()
+        {
+            books_list = new List<book_element>();
+        }
+
+        public void add_book(string title, books books_var_)
+        {
+            book_element newBook = new book_element(title, books_var_);
+            books_list.Add(newBook);
+        }
+
+        public void get_books_by_genre(books books_var_)
+        {
+            var finded_books = books_list.Where(_ => _.books_var == books_var_);
+
+            if (finded_books.Any())
+            {
+                Console.WriteLine($"Книги в жанре {books_var_}:");
+                foreach (var _ in finded_books)
+                {
+                    Console.WriteLine(_);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Неудалось найти книги с жанром {books_var_}.");
+            }
+        }
+    }
+
+
+    public void task_3()
+    {
+        var limiter = Enum.GetNames(typeof(books)).Length;
+        books_library library = new books_library();
+        var genres_names = string.Join("\n", Enum.GetNames(typeof(books)).Zip(Enum.GetValues(typeof(books)).Cast<int>(), (_, __) => $"{_} - {__}"));
+
+
+        void menu_main () {
+            Console.WriteLine($"Доступные жанры:\n{genres_names}");
+            Console.Write("Выберите жанр: ");
+            var genre = Console.ReadKey().KeyChar;
+            if (genre == 'e')
+            {
+                Environment.Exit(0);
+            }
+            int genre_index = (int)genre;
+            if (genre_index < 1) { Console.WriteLine($"Вы вышли за пределы [1-{limiter}]"); menu_main(); }
+            else if (genre_index > limiter)
+            {
+                while (genre_index > limiter)
+                {
+                    genre_index -= limiter;
+                }
+            }
+            menu_select(genre_index);
+        }
+
+        void menu_select (int genre_index)
+        {
+            Console.Clear();
+            books cur_genre = (books)genre_index;
+            Console.WriteLine("Доступные команды:\nadd: Добавить книгу\nlist|show: Посмотреть добавленные книги\nback: Назад");
+            while (true)
+            {
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case 'ф':
+                    case 'a':
+                        {
+                            Console.Clear();
+                            Console.Write($"Введите название книги для жанра {cur_genre}: ");
+                            library.add_book(Console.ReadLine(), cur_genre);
+                            menu_select(genre_index);
+                            break;
+                        }
+                    case 'д':
+                    case 'ы':
+                    case 'l':
+                    case 's':
+                        {
+                            Console.Clear();
+                            library.get_books_by_genre(cur_genre);
+                            Console.Write("\n\nДля продолжения нажмите любую клавишу");
+                            Console.ReadKey();
+                            menu_select(genre_index);
+                            break;
+                        }
+                    case 'и':
+                    case 'b':
+                        {
+                            Console.Clear();
+                            menu_main();
+                            break;
+                        }
+                    default: menu_select(genre_index); break;
+                }
+            }
+
+
+        }
+
+        while (true)
+        {
+            menu_main();
+        }
+    }
+
+    enum rsp
+    {
+        Камень = 1,
+        Ножницы,
+        Бумага
+    }
+
+    public void task_4(bool is_restart = false)
+    {
+        
+        var limiter = Enum.GetNames(typeof(rsp)).Length;
+        var rsp_vars = string.Join("\n", Enum.GetNames(typeof(rsp)).Zip(Enum.GetValues(typeof(rsp)).Cast<int>(), (_, __) => $"{_}. {__}"));
+        if (is_restart) Console.WriteLine("Давай сыграем в камень, ножницы, бумага\nВыбери свой вариант:");
+        else Console.WriteLine("Давай сыграем в камень, ножницы, бумага\nВыбери свой вариант:");
+        Console.WriteLine(rsp_vars);
+        Console.WriteLine("\n\n");
+        int rsp_index = (int)Console.ReadKey().KeyChar;
+        Console.Clear();
+        if (rsp_index < 1) Console.WriteLine($"Вы вышли за пределы [1-{limiter}]");
+        else if (rsp_index > limiter)
+        {
+            while (rsp_index > limiter)
+            {
+                rsp_index -= limiter;
+            }
+        }
+        int rsp_user = rsp_index;
+        int rsp_pc = new Random().Next(1, limiter);
+
+        Console.WriteLine((rsp)rsp_user);
+        Console.WriteLine($"Компьютер выбрал {(rsp)rsp_pc}\n");
+        if (rsp_user == rsp_pc) Console.WriteLine("Ничья");
+        else if ((rsp_user == 1 && rsp_pc == 2) || (rsp_pc == 1 && rsp_user == 3) || (rsp_user == 2 && rsp_pc == 3)) {
+            Console.WriteLine("Вы победили!");
+        }
+        else Console.WriteLine("Вы проиграли :)");
+        Console.WriteLine("Хотите сыграть ещё раз?\n");
+        switch (Console.ReadKey().KeyChar) {
+            case 'l':
+            case 'а':
+            case 'f':
+            case 'ф':
+            case 'a':
+            case 'к':
+            case 'r':
+            case 'с':
+            case 'c':
+            case 'д': {
+                    Console.Clear();
+                    task_4(true);
+                    break;
+            }
+            default: {
+                    Console.Clear();
+                    Console.WriteLine("Хорошо поиграли, всего хорошего!");
+                    break;
+            }
+        }
+    }
+
+    enum monthes
+    {
+        Январь = 1,
+        Февраль,
+        Март,
+        Апрель,
+        Май,
+        Июнь,
+        Июль,
+        Август,
+        Сентябрь,
+        Октябрь,
+        Ноябрь,
+        Декабрь
+    }
+
+    public void task_5 ()
+    {
+        Console.Write("{0}\n\nВыберите месяц: ", string.Join("\n", Enum.GetNames(typeof(monthes)).Zip(Enum.GetValues(typeof(monthes)).Cast<int>(), (_, __) => $"{__}. {_}"))); monthes choice_user = monthes.Август; try { choice_user = (monthes)(int.Parse(Console.ReadLine())); } catch { Console.WriteLine("Вы вышли за пределы!"); Environment.Exit(0); } string dw;
+        Dictionary<monthes, int> md = new Dictionary<monthes, int>{{monthes.Январь, 31},{monthes.Февраль, 28},{monthes.Март, 31},{monthes.Апрель, 30},{monthes.Май, 31},{monthes.Июнь, 30},{monthes.Июль, 31},{monthes.Август, 31},{monthes.Сентябрь, 30},{monthes.Октябрь, 31},{monthes.Ноябрь, 30},{monthes.Декабрь, 31}}; if (md[choice_user] % 10 == 1 && md[choice_user] % 100 != 11) dw = "день";else if ((md[choice_user] % 10 >= 2 && md[choice_user] % 10 <= 4) && (md[choice_user] % 100 < 10 || md[choice_user] % 100 >= 20)) dw = "дня";else dw = "дней";
+        Console.WriteLine($"В месяце [{choice_user}] {md[choice_user]} {dw}");
     }
 }
